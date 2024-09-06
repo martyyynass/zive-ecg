@@ -1,14 +1,13 @@
-import { Flex } from "@chakra-ui/react";
-import React, { FC, useEffect, useState } from "react";
+import { Flex, Text } from "@chakra-ui/react";
+import React, { Dispatch, FC, SetStateAction, useEffect } from "react";
 
 type TTimerProps = {
   isTimerRunning: boolean;
+  time: number;
+  setTime: Dispatch<SetStateAction<number>>;
 };
 
-const Timer: FC<TTimerProps> = ({ isTimerRunning }) => {
-  // state to store time
-  const [time, setTime] = useState(0);
-
+const Timer: FC<TTimerProps> = ({ isTimerRunning, time, setTime }) => {
   // state to check stopwatch running or not
   //   const [isRunning, setIsRunning] = useState(isTimerRunning);
 
@@ -31,13 +30,24 @@ const Timer: FC<TTimerProps> = ({ isTimerRunning }) => {
       intervalId = setInterval(() => setTime(time + 1), 10);
     }
     return () => clearInterval(intervalId);
-  }, [isTimerRunning, time]);
+  }, [isTimerRunning, time, setTime]);
 
   return (
-    <Flex width="100px" color="gray.600">
-      {hours}:{minutes.toString().padStart(2, "0")}:
-      {seconds.toString().padStart(2, "0")}:
-      {milliseconds.toString().padStart(2, "0")}
+    <Flex
+      gap={2}
+      background="white"
+      h="40px"
+      alignItems="center"
+      borderRadius="lg"
+      pl={3}
+      boxShadow="rgba(149, 157, 165, 0.15) 0px 8px 24px"
+    >
+      <Text fontSize="md">Duration:</Text>
+      <Flex width="100px" color="gray.600">
+        {hours}:{minutes.toString().padStart(2, "0")}:
+        {seconds.toString().padStart(2, "0")}:
+        {milliseconds.toString().padStart(2, "0")}
+      </Flex>
     </Flex>
   );
 };

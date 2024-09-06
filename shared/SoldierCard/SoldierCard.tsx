@@ -27,23 +27,25 @@ type TSoldierCardProps = {
 
 const SoldierCard: FC<TSoldierCardProps> = ({ soldierData, isTracking }) => {
   const { name, status } = soldierData;
-
   const [chartData, setChartData] = useState<{ x: number; y: number }[]>([]);
 
-  // console.log(chartData.length);
+  // Define the size of the sliding window and the increment
+  const sliceSize = 200;
+  const increment = 40;
+
+  // Generate a random start index using uniqueId as a seed
+  const getRandomStartIndex = () => {
+    return Math.floor(Math.random() * (csvData.length - sliceSize));
+  };
 
   // Keep track of the current index of the data
-  const [startIndex, setStartIndex] = useState(0);
+  const [startIndex, setStartIndex] = useState(getRandomStartIndex());
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
 
     // Function to update the data
     const updateData = () => {
-      // Define the size of the sliding window and the increment
-      const sliceSize = 200;
-      const increment = 40;
-
       // Calculate the new start index
       let newStartIndex = startIndex + increment;
 

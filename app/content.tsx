@@ -1,44 +1,57 @@
 "use client";
 
 import SoldierCard from "@/shared/SoldierCard";
+import StatisticsTile from "@/shared/StatisticsTile";
 import Timer from "@/shared/Timer";
 import { generateSoldierData } from "@/utils/soldiersData";
-import { Box, Button, Flex, Grid, Text } from "@chakra-ui/react";
+import { Button, Flex, Grid, Spinner } from "@chakra-ui/react";
 import React, { useState } from "react";
 
 const DashboardContent = () => {
   const [soldiers] = useState(generateSoldierData());
 
   const [isTracking, setIsTracking] = useState(false);
+  const [time, setTime] = useState(0);
 
   const handleMonitoring = () => {
     setIsTracking(!isTracking);
   };
 
+  const handleResetTracking = () => {
+    setIsTracking(false);
+    setTime(0);
+  };
+
+  if (!soldiers) {
+    return <Spinner />;
+  }
+
   return (
     <Flex direction="column" gap={6} w="full">
       <Flex align="center" w="full" mt={4} justify="space-between">
-        <Box
-          background="white"
-          borderRadius="lg"
-          p={5}
-          boxShadow="rgba(149, 157, 165, 0.15) 0px 8px 24px"
-        >
-          Stats and controls row
-        </Box>
+        <Flex gap={4}>
+          <StatisticsTile title="Total:" value={soldiers.length} />
+
+          <StatisticsTile
+            title="Warning:"
+            valueColor="orange"
+            value={
+              soldiers.filter((soldier) => soldier.status === "Warning").length
+            }
+          />
+
+          <StatisticsTile
+            title="Alarm:"
+            valueColor="red"
+            value={
+              soldiers.filter((soldier) => soldier.status === "Alarm").length
+            }
+          />
+        </Flex>
 
         <Flex gap={3} align="center">
-          <Flex
-            gap={2}
-            background="white"
-            h="40px"
-            alignItems="center"
-            borderRadius="lg"
-            pl={3}
-          >
-            <Text fontSize="md">Duration:</Text>
-            <Timer isTimerRunning={isTracking} />
-          </Flex>
+          <Timer isTimerRunning={isTracking} time={time} setTime={setTime} />
+
           <Button
             colorScheme={isTracking ? "red" : "green"}
             onClick={handleMonitoring}
@@ -47,6 +60,12 @@ const DashboardContent = () => {
           >
             {isTracking ? "Stop" : "Start"}
           </Button>
+
+          {time !== 0 && (
+            <Button colorScheme="orange" onClick={handleResetTracking}>
+              Reset
+            </Button>
+          )}
         </Flex>
       </Flex>
 
