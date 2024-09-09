@@ -101,11 +101,17 @@ const SoldierCard: FC<TSoldierCardProps> = memo(
               </Flex>
             </Flex>
 
+            <Text fontWeight={600} fontSize="sm">
+              BPM
+            </Text>
             <BpmChart
               isTracking={isTracking}
               randomStartIndex={Math.floor(Math.random() * 500)}
             />
 
+            <Text fontWeight={600} fontSize="sm">
+              ECG
+            </Text>
             <Box width="full" height={200}>
               <LineChart chartData={chartData} />
             </Box>
