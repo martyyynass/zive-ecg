@@ -1,5 +1,7 @@
 import DashboardContent from "./content";
 
-export default function Home() {
+export const Home = () => {
   return <DashboardContent />;
-}
+};
+
+export default Home;

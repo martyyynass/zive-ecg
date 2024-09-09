@@ -19,6 +19,8 @@ import { csvData } from "@/data/ecg1";
 import { PiExport } from "react-icons/pi";
 import LineChart from "../LineChart";
 import Link from "next/link";
+import { TChartPoint } from "@/types";
+import BpmChart from "../BpmChart";
 
 type TSoldierCardProps = {
   soldierData: TSoldier;
@@ -27,10 +29,11 @@ type TSoldierCardProps = {
 
 const SoldierCard: FC<TSoldierCardProps> = ({ soldierData, isTracking }) => {
   const { name, status } = soldierData;
-  const [chartData, setChartData] = useState<{ x: number; y: number }[]>([]);
+
+  const [chartData, setChartData] = useState<TChartPoint[]>([]);
 
   // Define the size of the sliding window and the increment
-  const sliceSize = 200;
+  const sliceSize = 800;
   const increment = 40;
 
   // Generate a random start index using uniqueId as a seed
@@ -61,9 +64,9 @@ const SoldierCard: FC<TSoldierCardProps> = ({ soldierData, isTracking }) => {
       setStartIndex(newStartIndex);
     };
 
-    // Set up an interval to update the data every 3 seconds
+    // Set up an interval to update the data every 4 mili seconds
     if (isTracking) {
-      interval = setInterval(updateData, 2000);
+      interval = setInterval(updateData, 400);
     }
 
     // Clean up the interval when the component is unmounted
@@ -112,6 +115,15 @@ const SoldierCard: FC<TSoldierCardProps> = ({ soldierData, isTracking }) => {
               />
             </Flex>
           </Flex>
+
+          {/* <Box width="full" height={200}>
+            <DottedLineChart chartData={bpmData} />
+          </Box> */}
+
+          <BpmChart
+            isTracking={isTracking}
+            randomStartIndex={Math.floor(Math.random() * 100)}
+          />
 
           <Box width="full" height={200}>
             <LineChart chartData={chartData} />

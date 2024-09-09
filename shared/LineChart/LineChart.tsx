@@ -1,3 +1,6 @@
+"use client";
+
+import { TChartPoint } from "@/types";
 import React, { FC } from "react";
 
 import {
@@ -11,7 +14,7 @@ import {
 } from "recharts";
 
 type TLineChartProps = {
-  chartData: { x: number; y: number }[];
+  chartData: TChartPoint[];
 };
 
 const LineChart: FC<TLineChartProps> = ({ chartData }) => {
