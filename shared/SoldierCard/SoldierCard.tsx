@@ -116,13 +116,9 @@ const SoldierCard: FC<TSoldierCardProps> = ({ soldierData, isTracking }) => {
             </Flex>
           </Flex>
 
-          {/* <Box width="full" height={200}>
-            <DottedLineChart chartData={bpmData} />
-          </Box> */}
-
           <BpmChart
             isTracking={isTracking}
-            randomStartIndex={Math.floor(Math.random() * 100)}
+            randomStartIndex={Math.floor(Math.random() * 500)}
           />
 
           <Box width="full" height={200}>
