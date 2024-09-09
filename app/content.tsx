@@ -5,7 +5,7 @@ import StatisticsTile from "@/shared/StatisticsTile";
 import Timer from "@/shared/Timer";
 import { generateSoldierData } from "@/utils/soldiersData";
 import { Button, Flex, Grid, Spinner } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 
 const DashboardContent = () => {
   const [soldiers] = useState(generateSoldierData());
@@ -13,14 +13,14 @@ const DashboardContent = () => {
   const [isTracking, setIsTracking] = useState(false);
   const [time, setTime] = useState(0);
 
-  const handleMonitoring = () => {
-    setIsTracking(!isTracking);
-  };
+  const handleMonitoring = useCallback(() => {
+    setIsTracking((prev) => !prev);
+  }, []);
 
-  const handleResetTracking = () => {
+  const handleResetTracking = useCallback(() => {
     setIsTracking(false);
     setTime(0);
-  };
+  }, []);
 
   if (!soldiers) {
     return <Spinner />;
@@ -30,7 +30,7 @@ const DashboardContent = () => {
     <Flex direction="column" gap={6} w="full">
       <Flex align="center" w="full" mt={4} justify="space-between">
         <Flex gap={4}>
-          <StatisticsTile title="Total:" value={soldiers.length} />
+          {/* <StatisticsTile title="Total:" value={soldiers.length} />
 
           <StatisticsTile
             title="Warning:"
@@ -46,7 +46,7 @@ const DashboardContent = () => {
             value={
               soldiers.filter((soldier) => soldier.status === "Alarm").length
             }
-          />
+          /> */}
         </Flex>
 
         <Flex gap={3} align="center">
