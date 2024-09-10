@@ -15,10 +15,11 @@ import Image from "next/image";
 import React, { FC, useCallback, useEffect, useState, memo } from "react";
 import { csvData } from "@/data/ecg1";
 import { PiExport } from "react-icons/pi";
-import LineChart from "../LineChart";
 import Link from "next/link";
 import { TChartPoint } from "@/types";
 import BpmChart from "../BpmChart";
+import { IoWarningOutline } from "react-icons/io5";
+import { RiAlarmWarningLine } from "react-icons/ri";
 
 type TSoldierCardProps = {
   soldierData: TSoldier;
@@ -30,6 +31,7 @@ const SoldierCard: FC<TSoldierCardProps> = memo(
   ({ soldierData, isTracking }) => {
     const { name, status } = soldierData;
 
+    // ECG data
     const [chartData, setChartData] = useState<TChartPoint[]>([]);
     const [startIndex, setStartIndex] = useState(() =>
       Math.floor(Math.random() * (csvData.length - 800))
@@ -37,17 +39,6 @@ const SoldierCard: FC<TSoldierCardProps> = memo(
 
     const sliceSize = 800;
     const increment = 40;
-
-    const getStatusColor = useCallback((status: string) => {
-      switch (status) {
-        case "Warning":
-          return "orange";
-        case "Alarm":
-          return "red";
-        default:
-          return "green";
-      }
-    }, []);
 
     useEffect(() => {
       let interval: NodeJS.Timeout;
@@ -68,6 +59,20 @@ const SoldierCard: FC<TSoldierCardProps> = memo(
 
       return () => clearInterval(interval);
     }, [isTracking, startIndex]);
+
+    const getStatusIcons = useCallback(() => {
+      if (!status || status === "Good") {
+        return null;
+      }
+
+      if (status === "Warning") {
+        return <IoWarningOutline fontSize="22px" color="orange" />;
+      }
+
+      if (status === "Alarm") {
+        return <RiAlarmWarningLine fontSize="22px" color="red" />;
+      }
+    }, [status]);
 
     return (
       <Card
@@ -91,44 +96,33 @@ const SoldierCard: FC<TSoldierCardProps> = memo(
           <Stack mt="6" spacing="3">
             <Flex align="center" justifyContent="space-between" mb={2}>
               <Heading size="md">{name}</Heading>
-              <Flex align="center">
-                <Box
-                  w={3}
-                  height={3}
-                  borderRadius="full"
-                  bg={getStatusColor(status)}
-                />
-              </Flex>
             </Flex>
 
-            <Text fontWeight={600} fontSize="sm">
-              BPM
-            </Text>
-            <BpmChart
-              isTracking={isTracking}
-              randomStartIndex={Math.floor(Math.random() * 500)}
-            />
+            <BpmChart isTracking={isTracking} />
 
             <Text fontWeight={600} fontSize="sm">
               ECG
             </Text>
             <Box width="full" height={200}>
-              <LineChart chartData={chartData} />
+              {/* <LineChart chartData={chartData} /> */}
             </Box>
           </Stack>
         </CardBody>
 
         <CardFooter pt={0}>
-          <Flex align="center" gap={2}>
-            <IconButton
-              borderRadius="full"
-              aria-label="Export"
-              icon={<PiExport />}
-              as={Link}
-              href="/assets/report.pdf"
-              target="_blank"
-            />{" "}
-            <Text fontSize="md">Detail report</Text>
+          <Flex align="center" justify="space-between" w="full">
+            <Flex align="center" gap={2}>
+              <IconButton
+                borderRadius="full"
+                aria-label="Export"
+                icon={<PiExport />}
+                as={Link}
+                href="/assets/report.pdf"
+                target="_blank"
+              />{" "}
+              <Text fontSize="md">Detail report</Text>
+            </Flex>
+            {getStatusIcons()}
           </Flex>
         </CardFooter>
       </Card>

@@ -1,13 +1,22 @@
 "use client";
 
+import Footer from "@/shared/Footer";
 import SoldierCard from "@/shared/SoldierCard";
-import StatisticsTile from "@/shared/StatisticsTile";
 import Timer from "@/shared/Timer";
 import { generateSoldierData } from "@/utils/soldiersData";
-import { Button, Flex, Grid, Spinner } from "@chakra-ui/react";
-import React, { useCallback, useState } from "react";
+import {
+  Button,
+  Flex,
+  Grid,
+  IconButton,
+  Spinner,
+  Text,
+} from "@chakra-ui/react";
+import React, { useCallback, useRef, useState } from "react";
+import { GoScreenFull } from "react-icons/go";
 
 const DashboardContent = () => {
+  const pageRef = useRef<HTMLDivElement>(null);
   const [soldiers] = useState(generateSoldierData());
 
   const [isTracking, setIsTracking] = useState(false);
@@ -26,30 +35,38 @@ const DashboardContent = () => {
     return <Spinner />;
   }
 
+  const handleFullScreen = () => {
+    if (pageRef.current) {
+      if (pageRef.current.requestFullscreen) {
+        pageRef.current.requestFullscreen();
+      }
+    }
+  };
+
   return (
-    <Flex direction="column" gap={6} w="full">
+    <Flex direction="column" gap={6} w="full" ref={pageRef}>
       <Flex align="center" w="full" mt={4} justify="space-between">
-        <Flex gap={4}>
-          {/* <StatisticsTile title="Total:" value={soldiers.length} />
-
-          <StatisticsTile
-            title="Warning:"
-            valueColor="orange"
-            value={
-              soldiers.filter((soldier) => soldier.status === "Warning").length
-            }
-          />
-
-          <StatisticsTile
-            title="Alarm:"
-            valueColor="red"
-            value={
-              soldiers.filter((soldier) => soldier.status === "Alarm").length
-            }
-          /> */}
+        <Flex
+          gap={4}
+          align="center"
+          bg="white"
+          px={4}
+          borderRadius="lg"
+          boxShadow="rgba(149, 157, 165, 0.15) 0px 8px 24px"
+        >
+          <Text textTransform="uppercase" fontWeight="600" fontSize="xl">
+            Duai
+          </Text>
         </Flex>
 
         <Flex gap={3} align="center">
+          <IconButton
+            icon={<GoScreenFull />}
+            aria-label="full screen"
+            onClick={handleFullScreen}
+            backgroundColor="white"
+            borderRadius="lg"
+          />
           <Timer isTimerRunning={isTracking} time={time} setTime={setTime} />
 
           <Button
@@ -88,6 +105,8 @@ const DashboardContent = () => {
           />
         ))}
       </Grid>
+
+      <Footer />
     </Flex>
   );
 };

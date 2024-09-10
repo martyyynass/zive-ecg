@@ -1,88 +1,119 @@
 import React, { FC, useEffect, useState } from "react";
-import {
-  CartesianGrid,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
-
-import { bpmData } from "@/data/bpm";
+import { bpmDataSet } from "@/data/bpm";
+import LineChart from "../LineChart";
+import { Flex, Text } from "@chakra-ui/react";
+import { LuHeart } from "react-icons/lu";
 
 type TBpmChartProps = {
   isTracking: boolean;
-  randomStartIndex: number;
 };
 
-const BpmChart: FC<TBpmChartProps> = ({ isTracking, randomStartIndex }) => {
-  const [currentIndex, setCurrentIndex] = useState(randomStartIndex);
-  const [data, setData] = useState<{ time: string; bpm: number }[]>([]);
+const BpmChart: FC<TBpmChartProps> = ({ isTracking }) => {
+  const [bpmData, setBpmData] = useState<number[]>([]);
+  const [labels, setLabels] = useState<string[]>([]);
+  const [counter, setCounter] = useState(Math.floor(Math.random() * 200));
+
+  const currentBpmValue = bpmDataSet[counter];
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
 
-    const updateBpmData = () => {
-      setCurrentIndex((prevIndex) => {
-        if (prevIndex < bpmData.length) {
-          const nextDataPoint = bpmData[prevIndex];
-          const timestamp = new Date().toLocaleTimeString();
-
-          setData((currentData) => {
-            const newData = [
-              ...currentData,
-              { time: timestamp, bpm: nextDataPoint.bpm },
-            ];
-
-            // If data exceeds 40 records, remove the first one
-            if (newData.length > 30) {
-              newData.shift(); // Remove the oldest record
-            }
-
-            return newData;
-          });
-
-          return prevIndex + 1; // Update index for the next data point
-        } else {
-          clearInterval(interval); // Stop the interval if we reach the end of bpmData
-          return prevIndex;
-        }
-      });
+    const updateData = () => {
+      setBpmData((prevData) => [...prevData, bpmDataSet[counter]]);
+      setLabels((prevLabels) => [...prevLabels, counter.toString()]);
+      setCounter((prevCounter) => prevCounter + 1);
     };
 
     if (isTracking) {
-      interval = setInterval(updateBpmData, 1000);
+      interval = setInterval(updateData, 1000);
     }
 
     return () => clearInterval(interval);
-  }, [isTracking]);
+  }, [isTracking, counter]);
+
+  const options = {
+    animation: {
+      duration: 0,
+    },
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+    responsive: true,
+    fill: false,
+    scales: {
+      y: {
+        min: 40,
+        max: 200,
+      },
+      x: {
+        display: false,
+      },
+    },
+  };
+
+  const data = {
+    labels: labels,
+    datasets: [
+      {
+        data: bpmData,
+        fill: true,
+        borderColor: "#FC2947",
+        backgroundColor: (context: any) => {
+          const chart = context.chart;
+          const { ctx, chartArea } = chart;
+
+          if (!chartArea) {
+            // This is called before the chart is ready
+            return null;
+          }
+
+          const gradient = ctx.createLinearGradient(
+            0,
+            chartArea.bottom,
+            0,
+            chartArea.top
+          );
+          gradient.addColorStop(0, "rgba(252, 41, 71, 0.05)");
+          gradient.addColorStop(1, "rgba(252, 41, 71, 0.6)");
+
+          return gradient;
+        },
+        tension: 0.3,
+        capBezierPoints: false,
+        pointRadius: 0,
+        borderWidth: 2,
+      },
+    ],
+  };
 
   return (
-    <ResponsiveContainer width="100%" height={200}>
-      <LineChart
-        data={data}
-        margin={{
-          top: 0,
-          right: 5,
-          left: -25,
-          bottom: 0,
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="time" fontSize="12px" />
-        <YAxis domain={[50, 190]} fontSize="12px" />
-        <Tooltip />
-        <Line
-          type="monotone"
-          dataKey="bpm"
-          stroke="#8884d8"
-          strokeWidth={2}
-          isAnimationActive={false}
-          dot={false}
-        />
-      </LineChart>
-    </ResponsiveContainer>
+    <Flex direction="column">
+      <Flex justify="space-between" align="center" mb={2}>
+        <Text fontWeight={600} fontSize="sm">
+          BPM
+        </Text>
+
+        <Flex
+          width={isTracking ? "65px" : "40px"}
+          h="40px"
+          borderRadius="lg"
+          align="center"
+          justify="center"
+          backgroundColor="rgba(252, 41, 71, 0.1)"
+          gap={1}
+        >
+          <LuHeart color="#FC2947" fontSize="20px" fill="#FC2947" />
+          {bpmData.length > 0 && isTracking && (
+            <Flex fontWeight={700} fontSize="sm">
+              {currentBpmValue}
+            </Flex>
+          )}
+        </Flex>
+      </Flex>
+      <LineChart data={data} options={options} />
+    </Flex>
   );
 };
 
