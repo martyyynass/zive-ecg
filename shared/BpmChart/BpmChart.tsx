@@ -1,3 +1,5 @@
+"use client";
+
 import React, { FC, useEffect, useState } from "react";
 import { bpmDataSet } from "@/data/bpm";
 import LineChart from "../LineChart";

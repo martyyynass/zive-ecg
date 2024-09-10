@@ -1,6 +1,6 @@
 import DashboardContent from "./content";
 
-export const Home = () => {
+const Home = () => {
   return <DashboardContent />;
 };
 

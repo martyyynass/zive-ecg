@@ -1,7 +1,6 @@
 "use client";
 import { TSoldier } from "@/utils/soldiersData";
 import {
-  Box,
   Card,
   CardBody,
   CardFooter,
@@ -12,14 +11,13 @@ import {
   Text,
 } from "@chakra-ui/react";
 import Image from "next/image";
-import React, { FC, useCallback, useEffect, useState, memo } from "react";
-import { csvData } from "@/data/ecg1";
+import React, { FC, useCallback, memo } from "react";
 import { PiExport } from "react-icons/pi";
 import Link from "next/link";
-import { TChartPoint } from "@/types";
 import BpmChart from "../BpmChart";
 import { IoWarningOutline } from "react-icons/io5";
 import { RiAlarmWarningLine } from "react-icons/ri";
+import EcgChart from "../EcgChart";
 
 type TSoldierCardProps = {
   soldierData: TSoldier;
@@ -30,35 +28,6 @@ type TSoldierCardProps = {
 const SoldierCard: FC<TSoldierCardProps> = memo(
   ({ soldierData, isTracking }) => {
     const { name, status } = soldierData;
-
-    // ECG data
-    const [chartData, setChartData] = useState<TChartPoint[]>([]);
-    const [startIndex, setStartIndex] = useState(() =>
-      Math.floor(Math.random() * (csvData.length - 800))
-    );
-
-    const sliceSize = 800;
-    const increment = 40;
-
-    useEffect(() => {
-      let interval: NodeJS.Timeout;
-
-      const updateData = () => {
-        let newStartIndex = startIndex + increment;
-        if (newStartIndex + sliceSize > csvData.length) {
-          newStartIndex = 0;
-        }
-
-        setChartData(csvData.slice(newStartIndex, newStartIndex + sliceSize));
-        setStartIndex(newStartIndex);
-      };
-
-      if (isTracking) {
-        interval = setInterval(updateData, 400);
-      }
-
-      return () => clearInterval(interval);
-    }, [isTracking, startIndex]);
 
     const getStatusIcons = useCallback(() => {
       if (!status || status === "Good") {
@@ -97,15 +66,8 @@ const SoldierCard: FC<TSoldierCardProps> = memo(
             <Flex align="center" justifyContent="space-between" mb={2}>
               <Heading size="md">{name}</Heading>
             </Flex>
-
             <BpmChart isTracking={isTracking} />
-
-            <Text fontWeight={600} fontSize="sm">
-              ECG
-            </Text>
-            <Box width="full" height={200}>
-              {/* <LineChart chartData={chartData} /> */}
-            </Box>
+            <EcgChart isTracking={isTracking} />
           </Stack>
         </CardBody>
 

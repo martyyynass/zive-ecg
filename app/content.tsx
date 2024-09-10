@@ -51,6 +51,7 @@ const DashboardContent = () => {
           align="center"
           bg="white"
           px={4}
+          h="40px"
           borderRadius="lg"
           boxShadow="rgba(149, 157, 165, 0.15) 0px 8px 24px"
         >
