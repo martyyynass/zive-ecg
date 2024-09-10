@@ -40,7 +40,6 @@ const Timer: FC<TTimerProps> = ({ isTimerRunning, time, setTime }) => {
       alignItems="center"
       borderRadius="lg"
       pl={3}
-      boxShadow="rgba(149, 157, 165, 0.15) 0px 8px 24px"
     >
       <Text fontSize="md">Duration:</Text>
       <Flex width="100px" color="gray.600">

@@ -1,19 +1,13 @@
 "use client";
 
 import Footer from "@/shared/Footer";
+import FullScreenButton from "@/shared/FullScreenButton";
 import SoldierCard from "@/shared/SoldierCard";
 import Timer from "@/shared/Timer";
 import { generateSoldierData } from "@/utils/soldiersData";
-import {
-  Button,
-  Flex,
-  Grid,
-  IconButton,
-  Spinner,
-  Text,
-} from "@chakra-ui/react";
-import React, { useCallback, useRef, useState } from "react";
-import { GoScreenFull } from "react-icons/go";
+import { Button, Flex, Grid, Spinner, Text } from "@chakra-ui/react";
+import Image from "next/image";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 const DashboardContent = () => {
   const pageRef = useRef<HTMLDivElement>(null);
@@ -21,6 +15,8 @@ const DashboardContent = () => {
 
   const [isTracking, setIsTracking] = useState(false);
   const [time, setTime] = useState(0);
+
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const handleMonitoring = useCallback(() => {
     setIsTracking((prev) => !prev);
@@ -31,43 +27,56 @@ const DashboardContent = () => {
     setTime(0);
   }, []);
 
+  const handleFullscreenChange = () => {
+    setIsFullscreen(document.fullscreenElement !== null);
+  };
+
+  useEffect(() => {
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, []);
+
   if (!soldiers) {
     return <Spinner />;
   }
 
-  const handleFullScreen = () => {
-    if (pageRef.current) {
-      if (pageRef.current.requestFullscreen) {
-        pageRef.current.requestFullscreen();
-      }
-    }
-  };
-
   return (
-    <Flex direction="column" gap={6} w="full" ref={pageRef}>
-      <Flex align="center" w="full" mt={4} justify="space-between">
-        <Flex
-          gap={4}
-          align="center"
-          bg="white"
-          px={4}
-          h="40px"
-          borderRadius="lg"
-          boxShadow="rgba(149, 157, 165, 0.15) 0px 8px 24px"
-        >
-          <Text textTransform="uppercase" fontWeight="600" fontSize="xl">
+    <Flex
+      direction="column"
+      gap={8}
+      w="full"
+      ref={pageRef}
+      backgroundColor="#eff3f4"
+      px={{ base: 5, lg: 10 }}
+    >
+      <Flex
+        align="center"
+        w="full"
+        mt={4}
+        justify="space-between"
+        backgroundColor="white"
+        px={4}
+        borderRadius="lg"
+        py={2}
+      >
+        <Flex gap={2} align="center" alignItems="center">
+          <Image
+            src="/assets/images/logo.png"
+            objectFit="contain"
+            width={60}
+            height={40}
+            alt="logo"
+          />
+          <Text textTransform="uppercase" fontWeight="600" fontSize="md">
             Duai
           </Text>
         </Flex>
 
         <Flex gap={3} align="center">
-          <IconButton
-            icon={<GoScreenFull />}
-            aria-label="full screen"
-            onClick={handleFullScreen}
-            backgroundColor="white"
-            borderRadius="lg"
-          />
+          <FullScreenButton ref={pageRef} isFullscreen={isFullscreen} />
           <Timer isTimerRunning={isTracking} time={time} setTime={setTime} />
 
           <Button

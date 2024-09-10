@@ -17,12 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Providers>
-          <Flex
-            w="full"
-            px={{ base: 5, lg: 10 }}
-            justifyContent="center"
-            margin="0 auto"
-          >
+          <Flex w="full" justifyContent="center" margin="0 auto">
             {children}
           </Flex>
         </Providers>
