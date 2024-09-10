@@ -9,7 +9,7 @@ type TFullScreenButtonProps = {
 };
 
 const FullScreenButton = forwardRef<HTMLDivElement, TFullScreenButtonProps>(
-  ({ isFullscreen }, ref) => {
+  ({ isFullscreen }, ref: any) => {
     const handleFullScreen = () => {
       if (ref?.current) {
         if (!isFullscreen) {
