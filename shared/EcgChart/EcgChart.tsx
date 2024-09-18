@@ -1,6 +1,6 @@
 "use client";
 
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import React, { FC, useEffect, useState } from "react";
 import LineChart from "../LineChart";
 import { ecgDataSet } from "@/data/ecg";
@@ -82,11 +82,7 @@ const EcgChart: FC<TEcgChartProps> = ({ isTracking }) => {
 
   return (
     <Flex direction="column">
-      <Flex justify="space-between" align="center" mb={2}>
-        <Text fontWeight={600} fontSize="sm">
-          ECG / 500Hz
-        </Text>
-      </Flex>
+      <Flex justify="space-between" align="center" mb={2}></Flex>
       <LineChart data={data} options={options} />
     </Flex>
   );

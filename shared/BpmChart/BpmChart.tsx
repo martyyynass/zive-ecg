@@ -14,6 +14,7 @@ const BpmChart: FC<TBpmChartProps> = ({ isTracking }) => {
   const [bpmData, setBpmData] = useState<number[]>([]);
   const [labels, setLabels] = useState<string[]>([]);
   const [counter, setCounter] = useState(Math.floor(Math.random() * 200));
+  const [seconds, setSeconds] = useState(0);
 
   const currentBpmValue = bpmDataSet[counter];
 
@@ -22,8 +23,9 @@ const BpmChart: FC<TBpmChartProps> = ({ isTracking }) => {
 
     const updateData = () => {
       setBpmData((prevData) => [...prevData, bpmDataSet[counter]]);
-      setLabels((prevLabels) => [...prevLabels, counter.toString()]);
+      setLabels((prevLabels) => [...prevLabels, seconds.toString()]);
       setCounter((prevCounter) => prevCounter + 1);
+      setSeconds((prevSeconds) => prevSeconds + 1);
     };
 
     if (isTracking) {
@@ -31,7 +33,7 @@ const BpmChart: FC<TBpmChartProps> = ({ isTracking }) => {
     }
 
     return () => clearInterval(interval);
-  }, [isTracking, counter]);
+  }, [isTracking, counter, seconds]);
 
   const options = {
     animation: {
@@ -50,7 +52,11 @@ const BpmChart: FC<TBpmChartProps> = ({ isTracking }) => {
         max: 200,
       },
       x: {
-        display: false,
+        display: true, // Show the x-axis for seconds
+        title: {
+          display: true,
+          text: "Seconds",
+        },
       },
     },
   };
